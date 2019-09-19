@@ -47,7 +47,7 @@ How to have this running
 8. Run the client. You can either run class `RemoteEjbClient` from IDE or use maven command like this:
     ````
 cd client
-mvn exec:java -Pclient
+mvn exec:exec
     ````
 
 If you login as user `john` with password `password`, you should be able to see that both EJB methods were successfully invoked.

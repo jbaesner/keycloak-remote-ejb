@@ -64,9 +64,9 @@ public class RemoteEjbClient {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {
-            System.out.print("Username: ");
+            logger.info("Enter Username: ");
             String username = reader.readLine();
-            System.out.print("Password: ");
+            logger.info("Enter Password: ");
             String password = reader.readLine();
 
             return new UsernamePasswordHolder(username, password);

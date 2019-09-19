@@ -14,7 +14,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.exec.plugin>1.6.0</version.exec.plugin>        
     </properties>
 
     <dependencies>
@@ -30,7 +30,6 @@
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-ejb-client</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <!-- some dependencies for the client logging -->
@@ -59,7 +58,6 @@
         <dependency>
             <groupId>org.picketbox</groupId>
             <artifactId>picketbox</artifactId>
-            <scope>provided</scope>
         </dependency>
 
     </dependencies>
@@ -77,25 +75,29 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${version.exec.plugin}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-classpath</argument>
+                        <classpath/>
+                        <argument>org.keycloak.example.RemoteEjbClient</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>client</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.5.0</version>
-                        <configuration>
-                            <mainClass>org.keycloak.example.RemoteEjbClient</mainClass>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>
