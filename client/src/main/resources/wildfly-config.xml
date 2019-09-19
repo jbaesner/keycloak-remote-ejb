@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <jboss-ejb-client xmlns="urn:jboss:wildfly-client-ejb:3.0">
+
+        <!-- where to connect to -->
+        <connections>
+            <connection uri="remote+http://localhost:8080" />
+        </connections>
+        
+        <!-- 
+         | the client interceptor could be bound in this configuration  
+         | or as a service, like before
+         -->
+        <global-interceptors>
+            <interceptor class="org.keycloak.example.ClientInterceptor" />
+        </global-interceptors>
+        
+    </jboss-ejb-client>
+    
+    <!-- optional endpoint configuration to set global/custom read-/write-timeout and heartbeat-interval -->
+    <endpoint xmlns="urn:jboss-remoting:5.1" read-timeout="60000" heartbeat-interval="30000" >
+        <connections>
+            <connection destination="remote+http://localhost:8080" read-timeout="30000" write-timeout="30000" heartbeat-interval="15000" />
+        </connections>
+    </endpoint>
+    
+</configuration>
