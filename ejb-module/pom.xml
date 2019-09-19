@@ -11,13 +11,9 @@
     <packaging>jar</packaging>
 
     <name>ejb-module</name>
-    <url>http://maven.apache.org</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
+    
         <!-- Import the Common Annotations API (JSR-250), we use provided scope
             as the API is included in WildFly -->
         <dependency>
@@ -40,17 +36,17 @@
         </dependency>
 
         <dependency>
-            <groupId>org.wildfly</groupId>
+            <groupId>org.picketbox</groupId>
+            <artifactId>picketbox</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.eap</groupId>
             <artifactId>wildfly-security-api</artifactId>
             <scope>provided</scope>
         </dependency>
         
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-core-security-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-core</artifactId>
