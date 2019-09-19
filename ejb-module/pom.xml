@@ -22,7 +22,7 @@
             as the API is included in WildFly -->
         <dependency>
             <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+            <artifactId>jboss-annotations-api_1.3_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -44,6 +44,7 @@
             <artifactId>wildfly-security-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.wildfly.core</groupId>
             <artifactId>wildfly-core-security-api</artifactId>
@@ -55,17 +56,11 @@
             <artifactId>keycloak-core</artifactId>
             <scope>provided</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-adapter-core</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- TODO: Remove -->
-        <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-security</artifactId>
-            <version>10.0.0.Final</version>
         </dependency>
 
     </dependencies>
@@ -74,15 +69,6 @@
         <!-- Set the name of the deployment -->
         <finalName>${project.artifactId}</finalName>
         <plugins>
-            <!-- WildFly plug-in to deploy the application -->
-            <!--<plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>1.0.2.Final</version>
-                <configuration>
-                    <filename>${project.build.finalName}.jar</filename>
-                </configuration>
-            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

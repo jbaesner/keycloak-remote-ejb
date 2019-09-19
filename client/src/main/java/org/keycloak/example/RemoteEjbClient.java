@@ -8,6 +8,8 @@ import java.util.Hashtable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.jboss.logging.Logger;
 import org.keycloak.example.ejb.HelloBean;
 import org.keycloak.example.ejb.KeycloakToken;
 import org.keycloak.example.ejb.RemoteHello;
@@ -18,17 +20,24 @@ import org.keycloak.example.ejb.RemoteHello;
  */
 public class RemoteEjbClient {
 
+    private static Logger logger;
+    
+    static {
+        System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
+        logger = Logger.getLogger(RemoteEjbClient.class);
+    }
+    
     public static void main( String[] args ) throws Exception {
         // Step 1 : Retrieve username+password of user. It can be done anyhow by the application (eg. swing form)
         UsernamePasswordHolder usernamePassword = promptUsernamePassword();
         //UsernamePasswordHolder usernamePassword = new UsernamePasswordHolder("john", "password");
 
-        System.out.println("Will authenticate with username '" + usernamePassword.username + "' and password '" + usernamePassword.password + "'");
+        logger.infof("Will authenticate with username '%s' and password '%s'", usernamePassword.username, usernamePassword.password);
 
         // Step 2 : Keycloak DirectGrant (OAuth2 Resource Owner Password Credentials Grant) from the application
         DirectGrantInvoker directGrant = new DirectGrantInvoker();
         KeycloakToken keycloakToken = directGrant.keycloakAuthenticate(usernamePassword.username, usernamePassword.password);
-        System.out.println("Successfully authenticated against Keycloak and retrieved token");
+        logger.info("Successfully authenticated against Keycloak and retrieved token");
 
         // Step 3 : Push credentials to clientContext from where ClientInterceptor can retrieve them
         SecurityActions.securityContextSetPrincipalCredential(null, keycloakToken);
@@ -36,14 +45,14 @@ public class RemoteEjbClient {
 
             // Step 4 : EJB invoke
             final RemoteHello remoteHello = lookupRemoteStatelessHello();
-            System.out.println("Obtained RemoteHello for invocation");
+            logger.info("Obtained RemoteHello for invocation");
 
-            System.out.println("Going to invoke EJB");
+            logger.info("Going to invoke EJB");
             String hello = remoteHello.helloSimple();
-            System.out.println("HelloSimple invocation: " + hello);
+            logger.infof("HelloSimple invocation: %s", hello);
 
             String hello2 = remoteHello.helloAdvanced();
-            System.out.println("HelloAdvanced invocation: " + hello2);
+            logger.infof("HelloAdvanced invocation: %s", hello2);
         } finally {
             SecurityActions.clearSecurityContext();
         }
@@ -51,7 +60,7 @@ public class RemoteEjbClient {
 
 
     private static UsernamePasswordHolder promptUsernamePassword() throws IOException {
-        System.out.println("Remote EJB client will ask for your username and password and then authenticate against Keycloak and call EJB.");
+        logger.info("Remote EJB client will ask for your username and password and then authenticate against Keycloak and call EJB.");
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -97,7 +106,7 @@ public class RemoteEjbClient {
             final String viewClassName = RemoteHello.class.getName();
             // let's do the lookup
             String lookupKey = "ejb:" + appName + "/" + moduleName + "/" + distinctName + "/" + beanName + "!" + viewClassName;
-            System.out.println("Lookup for remote EJB bean: " + lookupKey);
+            logger.infof("Lookup for remote EJB bean: %s", lookupKey);
             return (RemoteHello) context.lookup(lookupKey);
         } finally {
             context.close();

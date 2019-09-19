@@ -17,67 +17,49 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.wildfly</groupId>
-                <artifactId>wildfly-ejb-client-bom</artifactId>
-                <version>10.0.0.Final</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-
-    </dependencyManagement>
-
     <dependencies>
-        <!-- Import the transaction spec API, we use runtime scope because
-            we aren't using any direct reference to the spec API in our client code -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.transaction</groupId>
-            <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <!-- Import the EJB API, we use runtime scope because we aren't using
-            any direct reference to EJB spec API in our client code -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.ejb</groupId>
-            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-            <scope>runtime</scope>
-        </dependency>
 
         <!-- We depend on the EJB remote business interfaces  of this application -->
         <dependency>
             <groupId>org.keycloak.example</groupId>
             <artifactId>ejb-module</artifactId>
-            <!--<type>ejb-client</type>-->
             <version>${project.version}</version>
         </dependency>
-
+   
         <!-- Include the ejb client jars -->
         <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-ejb-client-bom</artifactId>
-            <type>pom</type>
-            <scope>runtime</scope>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-ejb-client</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- some dependencies for the client logging -->
+        <dependency>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>jboss-logmanager</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-core</artifactId>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>commons-logging-jboss-logging</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-adapter-core</artifactId>
-        </dependency>
+        
+        <!-- the following dependencies are needed for the DirectGrantInvoker -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
+        
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-core</artifactId>
+        </dependency>
+        
+        <!-- the dependency to picketbox is needed for the SecurityActions -->
+        <dependency>
+            <groupId>org.picketbox</groupId>
+            <artifactId>picketbox</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
@@ -95,64 +77,8 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-
-            <!-- Add the maven exec plug-in to allow us to run a java program
-                via maven -->
-            <!--<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${version.exec.plugin}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <executable>java</executable>
-                    <workingDirectory>${project.build.directory}/exec-working-directory</workingDirectory>
-                    <arguments>
-                        <argument>-classpath</argument>
-                        <classpath>
-                        </classpath>
-                        <argument>org.jboss.as.quickstarts.ejb.remote.client.RemoteEJBClient</argument>
-                    </arguments>
-                </configuration>
-            </plugin>-->
-
-            <!-- build standalone exe jar -->
-            <!--<plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.jboss.as.quickstarts.ejb.remote.client.RemoteEJBClient</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>-->
-
-            <!-- The WildFly plug-in deploys your apps to a local WildFly
-                container -->
-            <!-- Disabling it here means that we don't try to deploy this
-                POM! -->
-            <!--<plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>${version.wildfly.maven.plugin}</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>-->
         </plugins>
-
     </build>
-
 
     <profiles>
         <profile>

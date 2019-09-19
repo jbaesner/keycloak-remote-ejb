@@ -12,6 +12,7 @@
 
   <properties>
     <keycloak.version>2.5.1.Final</keycloak.version>
+    <wildfly.version>17.0.1.Final</wildfly.version>
   </properties>
 
   <modules>
@@ -25,22 +26,31 @@
       <!-- JBoss distributes a complete set of Java EE APIs including
           a Bill of Materials (BOM). A BOM specifies the versions of a "stack" (or
           a collection) of artifacts. We use this here so that we always get the correct
-          versions of artifacts. Here we use the jboss-javaee-7.0 stack (you can
+          versions of artifacts. Here we use the jboss-javaee-8.0 stack (you can
           read this as the JBoss stack of the Java EE APIs). You can actually
           use this stack with any version of WildFly that implements Java EE. -->
       <dependency>
         <groupId>org.jboss.spec</groupId>
-        <artifactId>jboss-javaee-7.0</artifactId>
-        <version>1.0.3.Final</version>
+        <artifactId>jboss-javaee-8.0</artifactId>
+        <version>1.0.4.Final</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly</groupId>
+        <artifactId>wildfly-parent</artifactId>
+        <version>${wildfly.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
 
       <!-- Needed for server -->
+      
       <dependency>
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-ejb-client-bom</artifactId>
-        <version>10.0.0.Final</version>
+        <version>${wildfly.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -50,6 +60,7 @@
         <artifactId>keycloak-core</artifactId>
         <version>${keycloak.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-adapter-core</artifactId>
@@ -63,6 +74,6 @@
       </dependency>
 
     </dependencies>
-  </dependencyManagement>
 
+  </dependencyManagement>
 </project>
