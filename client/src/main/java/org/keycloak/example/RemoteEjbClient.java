@@ -84,7 +84,7 @@ public class RemoteEjbClient {
      */
     private static RemoteHello lookupRemoteStatelessHello() throws NamingException {
         final Hashtable<String, Object> jndiProperties = new Hashtable<String, Object>();
-        jndiProperties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+        jndiProperties.put(Context.INITIAL_CONTEXT_FACTORY, "org.wildfly.naming.client.WildFlyInitialContextFactory");
         final Context context = new InitialContext(jndiProperties);
         try {
             // The app name is the application name of the deployed EJBs. This is typically the ear name
