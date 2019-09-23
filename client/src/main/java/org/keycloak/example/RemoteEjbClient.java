@@ -13,6 +13,10 @@ import org.jboss.logging.Logger;
 import org.keycloak.example.ejb.HelloBean;
 import org.keycloak.example.ejb.KeycloakToken;
 import org.keycloak.example.ejb.RemoteHello;
+import org.wildfly.security.auth.client.AuthenticationConfiguration;
+import org.wildfly.security.auth.client.AuthenticationContext;
+import org.wildfly.security.auth.client.MatchRule;
+import org.wildfly.security.sasl.SaslMechanismSelector;
 
 /**
  * @author <a href="mailto:mposolda@redhat.com">Marek Posolda</a>
@@ -34,12 +38,22 @@ public class RemoteEjbClient {
 
         logger.infof("Will authenticate with username '%s' and password '%s'", usernamePassword.username, usernamePassword.password);
 
-        // Step 2 : Keycloak DirectGrant (OAuth2 Resource Owner Password Credentials Grant) from the application
+        // Step 2 : Elytron client security
+        AuthenticationConfiguration user = AuthenticationConfiguration.empty()
+                .setSaslMechanismSelector(SaslMechanismSelector.NONE.addMechanism("PLAIN"))
+                .useName(usernamePassword.username)
+                .usePassword(usernamePassword.password);
+        
+        final AuthenticationContext authCtx = AuthenticationContext.empty().with(MatchRule.ALL, user);
+
+        AuthenticationContext.getContextManager().setThreadDefault(authCtx);
+        
+        // Step 3 : Keycloak DirectGrant (OAuth2 Resource Owner Password Credentials Grant) from the application
         DirectGrantInvoker directGrant = new DirectGrantInvoker();
         KeycloakToken keycloakToken = directGrant.keycloakAuthenticate(usernamePassword.username, usernamePassword.password);
         logger.info("Successfully authenticated against Keycloak and retrieved token");
 
-        // Step 3 : Push credentials to clientContext from where ClientInterceptor can retrieve them
+        // Step 4 : Push credentials to clientContext from where ClientInterceptor can retrieve them
         SecurityActions.securityContextSetPrincipalCredential(null, keycloakToken);
         try {
 
@@ -85,6 +99,7 @@ public class RemoteEjbClient {
     private static RemoteHello lookupRemoteStatelessHello() throws NamingException {
         final Hashtable<String, Object> jndiProperties = new Hashtable<String, Object>();
         jndiProperties.put(Context.INITIAL_CONTEXT_FACTORY, "org.wildfly.naming.client.WildFlyInitialContextFactory");
+        jndiProperties.put(Context.PROVIDER_URL, "http://localhost:8080/wildfly-services");
         final Context context = new InitialContext(jndiProperties);
         try {
             // The app name is the application name of the deployed EJBs. This is typically the ear name
