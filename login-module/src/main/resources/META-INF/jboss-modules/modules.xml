@@ -1,0 +1,33 @@
+<!-- https://www.smartics.eu/confluence/display/SJBMMP/The+smartics+JBoss+Modules+XSD -->
+<modules xmlns="http://smartics.de/ns/jboss-modules-descriptor/1">
+
+	<module name="org.keycloak.example">
+		<match>
+			<includes>
+				<include>
+					<groupId>org.keycloak.example</groupId>
+				</include>
+			</includes>
+		</match>
+        
+        <apply-to-module>
+            <dependencies>
+                <module name="org.jboss.logging" />
+            </dependencies>
+        </apply-to-module>        
+	</module>
+
+	<module name="org.picketbox">
+		<match>
+			<includes>
+				<include>
+					<groupId>org.picketbox</groupId> 
+					<artifactId>picketbox</artifactId> 
+				</include>
+			</includes>
+		</match>
+		<directives>
+			<skip>true</skip>
+		</directives>
+	</module>
+</modules>
