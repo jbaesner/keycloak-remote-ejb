@@ -32,6 +32,12 @@
             <artifactId>jboss-ejb-client</artifactId>
         </dependency>
 
+        <!-- Include the ejb client jars for EJB over HTTP -->
+        <dependency>
+            <groupId>org.wildfly.wildfly-http-client</groupId>
+            <artifactId>wildfly-http-ejb-client</artifactId>
+        </dependency>
+
         <!-- some dependencies for the client logging -->
         <dependency>
             <groupId>org.jboss.logmanager</groupId>

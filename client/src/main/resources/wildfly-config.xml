@@ -4,7 +4,7 @@
 
         <!-- where to connect to -->
         <connections>
-            <connection uri="remote+http://localhost:8080" />
+            <connection uri="http://localhost:8080/wildfly-services" />
         </connections>
         
         <!-- 
@@ -20,7 +20,7 @@
     <!-- optional endpoint configuration to set global/custom read-/write-timeout and heartbeat-interval -->
     <endpoint xmlns="urn:jboss-remoting:5.1" read-timeout="60000" heartbeat-interval="30000" >
         <connections>
-            <connection destination="remote+http://localhost:8080" read-timeout="30000" write-timeout="30000" heartbeat-interval="15000" />
+            <connection destination="http://localhost:8080/wildfly-services" read-timeout="30000" write-timeout="30000" heartbeat-interval="15000" />
         </connections>
     </endpoint>
     
