@@ -17,34 +17,65 @@ How to have this running
  
  
 2. Build this project with: 
-    ````
-    mvn clean install
-    ````
+
+        mvn clean install
 
 3. Deploy remote ejb to the wildfly server. 
-    ````
-    cp ejb-module/target/ejb-module.jar $KEYCLOAK_DEMO_HOME/keycloak/standalone/deployment
-    ````
 
-4. Add new security-domain to the security-domains inside the file `$KEYCLOAK_DEMO_HOME/keycloak/standalone/configuration/standalone.xml`:
-    ````
-                <security-domain name="keycloak-ejb">
+        cp ejb-module/target/ejb-module.jar $KEYCLOAK_DEMO_HOME/keycloak/standalone/deployment
+
+4. Deploy the custom module to the wildfly server.
+
+         cp -a cp -a login-module/target/jboss-modules/org/ $KEYCLOAK_DEMO_HOME/keycloak/modules
+
+4. Add two new security-domains to the security-domains inside the file `$KEYCLOAK_DEMO_HOME/keycloak/standalone/configuration/standalone.xml`:
+
+        <security-domain name="disabled-security">
+            <authentication>
+                <login-module code="org.keycloak.example.DisabledLoginModule" module="org.keycloak.example" flag="required" />
+            </authentication>
+        </security-domain>
+        
+        <security-domain name="keycloak-ejb">
+            <authentication>
+                <login-module code="org.keycloak.adapters.jaas.BearerTokenLoginModule" flag="required">
+                    <module-option name="keycloak-config-file" value="classpath:/keycloak-ejb.json"/>
+                </login-module>
+                <login-module code="org.keycloak.example.ejb.ConvertKeycloakRolesLoginModule" flag="required"/>
+            </authentication>
+        </security-domain>
+
+5. configure the http-invoker to use a JAAS backed SecurityRealm using the 'disabled-security' security-domain
+
+        <management>
+            <security-realms>
+                ...
+                <security-realm name="DisabledRealm">
                     <authentication>
-                        <login-module code="org.keycloak.adapters.jaas.BearerTokenLoginModule" flag="required">
-                            <module-option name="keycloak-config-file" value="classpath:/keycloak-ejb.json"/>
-                        </login-module>
-                        <login-module code="org.keycloak.example.ejb.ConvertKeycloakRolesLoginModule" flag="required"/>
+                        <jaas name="disabled-security"/>
                     </authentication>
-                </security-domain>
-    ````
+                </security-realm>
+            </security-realms>
+            ...
+        </management>
+        ...
+        <subsystem xmlns="urn:jboss:domain:undertow:7.0" default-server="default-server" default-virtual-host="default-host" default-servlet-container="default" default-security-domain="other">
+                ...
+                <host name="default-host" alias="localhost">
+                    <location name="/" handler="welcome-content"/>
+                    <http-invoker security-realm="DisabledRealm"/>
+                </host>
+            </server>
+            ...
+        </subsystem>
 
-5. Run the keycloak server
+6. Run the keycloak server
 
-6. Create admin user in Keycloak and login to admin console (See Keycloak/RHSSO docs for details).
+7. Create admin user in Keycloak and login to admin console (See Keycloak/RHSSO docs for details).
 
-7. In keycloak admin console, import realm from file `testrealm.json` .
+8. In keycloak admin console, import realm from file `testrealm.json` .
 
-8. Run the client. You can either run class `RemoteEjbClient` from IDE or use maven command like this:
+9. Run the client. You can either run class `RemoteEjbClient` from IDE or use maven command like this:
     ````
 cd client
 mvn exec:exec
